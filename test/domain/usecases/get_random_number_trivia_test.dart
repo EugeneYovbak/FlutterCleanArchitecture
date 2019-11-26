@@ -6,8 +6,7 @@ import 'package:flutter_clean_architecture/domain/usecases/get_random_number_tri
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class MockNumberTriviaRepository extends Mock
-    implements NumberTriviaRepository {}
+class MockNumberTriviaRepository extends Mock implements NumberTriviaRepository {}
 
 void main() {
   GetRandomNumberTrivia useCase;
