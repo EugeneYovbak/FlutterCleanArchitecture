@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_clean_architecture/core/base/usecase.dart';
 import 'package:flutter_clean_architecture/core/error/failures.dart';
 import 'package:flutter_clean_architecture/domain/entities/number_trivia.dart';
@@ -16,10 +17,13 @@ class GetConcreteNumberTrivia implements UseCase<NumberTrivia, Params> {
   }
 }
 
-class Params {
+class Params extends Equatable {
   final int number;
 
   Params({
     @required this.number,
   });
+
+  @override
+  List<Object> get props => [number];
 }
