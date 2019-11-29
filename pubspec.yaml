@@ -13,6 +13,9 @@ dependencies:
   # State Management
   flutter_bloc: ^2.0.1
 
+  # Service Locator
+  get_it: ^3.0.3
+
   # Value Equality
   equatable: ^1.0.1
 
@@ -32,5 +35,4 @@ dev_dependencies:
   mockito: ^4.1.1
 
 flutter:
-
   uses-material-design: true

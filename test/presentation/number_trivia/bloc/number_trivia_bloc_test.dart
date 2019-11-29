@@ -5,7 +5,7 @@ import 'package:flutter_clean_architecture/core/util/input_converter.dart';
 import 'package:flutter_clean_architecture/domain/entities/number_trivia.dart';
 import 'package:flutter_clean_architecture/domain/usecases/get_concrete_number_trivia.dart';
 import 'package:flutter_clean_architecture/domain/usecases/get_random_number_trivia.dart';
-import 'package:flutter_clean_architecture/presentation/bloc/bloc.dart';
+import 'package:flutter_clean_architecture/presentation/number_trivia/bloc/bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
