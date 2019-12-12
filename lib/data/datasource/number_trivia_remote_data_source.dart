@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter_clean_architecture/core/error/exceptions.dart';
+import 'package:flutter_clean_architecture/data/api/number_trivia_api_service.dart';
 import 'package:flutter_clean_architecture/data/models/number_trivia_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 abstract class NumberTriviaRemoteDataSource {
@@ -12,30 +10,29 @@ abstract class NumberTriviaRemoteDataSource {
 }
 
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
-  final http.Client client;
+  final NumberTriviaApiService numberTriviaApiService;
 
   NumberTriviaRemoteDataSourceImpl({
-    @required this.client,
+    @required this.numberTriviaApiService,
   });
 
   @override
-  Future<NumberTriviaModel> getConcreteNumberTrivia(int number) async =>
-      _getTriviaFromUrl('http://numbersapi.com/$number');
-
-  @override
-  Future<NumberTriviaModel> getRandomNumberTrivia() async =>
-      _getTriviaFromUrl('http://numbersapi.com/random');
-
-  Future<NumberTriviaModel> _getTriviaFromUrl(String url) async {
-    final response = await client.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+  Future<NumberTriviaModel> getConcreteNumberTrivia(int number) async {
+    final response = await numberTriviaApiService.getConcreteNumberTrivia(number);
 
     if (response.statusCode == 200) {
-      return NumberTriviaModel.fromJson(json.decode(response.body));
+      return NumberTriviaModel.fromJson(response.body);
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<NumberTriviaModel> getRandomNumberTrivia() async {
+    final response = await numberTriviaApiService.getRandomNumberTrivia();
+
+    if (response.statusCode == 200) {
+      return NumberTriviaModel.fromJson(response.body);
     } else {
       throw ServerException();
     }

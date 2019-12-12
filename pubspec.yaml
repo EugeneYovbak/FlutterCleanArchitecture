@@ -24,7 +24,7 @@ dependencies:
 
   # Remote API
   data_connection_checker: ^0.3.4
-  http: ^0.12.0+2
+  chopper: ^3.0.1+1
 
   # Local Cache
   shared_preferences: ^0.5.4+5
@@ -32,6 +32,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  chopper_generator: ^3.0.1+1
+  build_runner:
+
   mockito: ^4.1.1
 
 flutter:
