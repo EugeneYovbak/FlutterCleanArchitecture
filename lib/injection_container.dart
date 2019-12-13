@@ -17,11 +17,39 @@ import 'domain/repositories/number_trivia_repository.dart';
 final serviceLocator = GetIt.instance;
 
 Future<void> init() async {
-  // External
-  serviceLocator.registerLazySingleton(() => DataConnectionChecker());
+  // Bloc
+  serviceLocator.registerFactory(() => NumberTriviaBloc(
+        getConcreteNumberTrivia: serviceLocator(),
+        getRandomNumberTrivia: serviceLocator(),
+        inputConverter: serviceLocator(),
+      ));
 
+  // Use Cases
+  serviceLocator.registerLazySingleton(() => GetConcreteNumberTrivia(serviceLocator()));
+  serviceLocator.registerLazySingleton(() => GetRandomNumberTrivia(serviceLocator()));
+
+  // Repositories
+  serviceLocator.registerLazySingleton<NumberTriviaRepository>(() => NumberTriviaRepositoryImpl(
+        remoteDataSource: serviceLocator(),
+        localDataSource: serviceLocator(),
+        networkInfo: serviceLocator(),
+      ));
+
+  // Data sources
+  serviceLocator.registerLazySingleton<NumberTriviaRemoteDataSource>(
+      () => NumberTriviaRemoteDataSourceImpl(apiService: serviceLocator()));
+  serviceLocator.registerLazySingleton<NumberTriviaLocalDataSource>(
+      () => NumberTriviaLocalDataSourceImpl(sharedPreferences: serviceLocator()));
+
+  // Core
+  serviceLocator.registerLazySingleton(() => InputConverter());
+  serviceLocator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(serviceLocator()));
+
+  // External
   final sharedPreferences = await SharedPreferences.getInstance();
   serviceLocator.registerLazySingleton(() => sharedPreferences);
+
+  serviceLocator.registerLazySingleton(() => DataConnectionChecker());
 
   final chopperClient = ChopperClient(
     baseUrl: 'http://numbersapi.com',
@@ -31,32 +59,4 @@ Future<void> init() async {
     converter: JsonConverter(),
   );
   serviceLocator.registerLazySingleton(() => chopperClient.getService<NumberTriviaApiService>());
-
-  // Core
-  serviceLocator.registerLazySingleton(() => InputConverter());
-  serviceLocator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(serviceLocator()));
-
-  // Data sources
-  serviceLocator.registerLazySingleton<NumberTriviaRemoteDataSource>(
-      () => NumberTriviaRemoteDataSourceImpl(apiService: serviceLocator()));
-  serviceLocator.registerLazySingleton<NumberTriviaLocalDataSource>(
-      () => NumberTriviaLocalDataSourceImpl(sharedPreferences: serviceLocator()));
-
-  // Repositories
-  serviceLocator.registerLazySingleton<NumberTriviaRepository>(() => NumberTriviaRepositoryImpl(
-    remoteDataSource: serviceLocator(),
-    localDataSource: serviceLocator(),
-    networkInfo: serviceLocator(),
-  ));
-
-  // Use Cases
-  serviceLocator.registerLazySingleton(() => GetConcreteNumberTrivia(serviceLocator()));
-  serviceLocator.registerLazySingleton(() => GetRandomNumberTrivia(serviceLocator()));
-
-  // Bloc
-  serviceLocator.registerFactory(() => NumberTriviaBloc(
-    getConcreteNumberTrivia: serviceLocator(),
-    getRandomNumberTrivia: serviceLocator(),
-    inputConverter: serviceLocator(),
-  ));
 }
