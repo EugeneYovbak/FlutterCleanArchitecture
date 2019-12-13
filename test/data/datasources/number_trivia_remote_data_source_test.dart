@@ -84,7 +84,7 @@ void main() {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
 
     test(
-      'should perform a request on a URL with random being the endpoint and with application/json header',
+      'should perform a request on a URL with random being the endpoint',
       () async {
         // arrange
         setUpMockHttpClientSuccess();
