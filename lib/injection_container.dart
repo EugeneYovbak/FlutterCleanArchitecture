@@ -56,6 +56,10 @@ Future<void> init() async {
     services: [
       NumberTriviaApiService.create(),
     ],
+    interceptors: [
+      HeadersInterceptor({'Content-Type': 'application/json'}),
+      HttpLoggingInterceptor(),
+    ],
     converter: JsonConverter(),
   );
   serviceLocator.registerLazySingleton(() => chopperClient.getService<NumberTriviaApiService>());
