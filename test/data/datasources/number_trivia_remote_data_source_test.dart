@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:chopper/chopper.dart';
 import 'package:flutter_clean_architecture/core/error/exceptions.dart';
+import 'package:flutter_clean_architecture/data/api/number_trivia_api_service.dart';
 import 'package:flutter_clean_architecture/data/datasource/number_trivia_remote_data_source.dart';
 import 'package:flutter_clean_architecture/data/models/number_trivia_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,25 +12,31 @@ import 'package:mockito/mockito.dart';
 
 import '../../fixtures/fixture_reader.dart';
 
-class MockHttpClient extends Mock implements http.Client {}
+class MockNumberTriviaApiService extends Mock implements NumberTriviaApiService {}
 
 void main() {
   NumberTriviaRemoteDataSourceImpl dataSource;
-  MockHttpClient mockHttpClient;
+  MockNumberTriviaApiService mockNumberTriviaApiService;
 
   setUp(() {
-    mockHttpClient = MockHttpClient();
-    dataSource = NumberTriviaRemoteDataSourceImpl(client: mockHttpClient);
+    mockNumberTriviaApiService = MockNumberTriviaApiService();
+    dataSource = NumberTriviaRemoteDataSourceImpl(apiService: mockNumberTriviaApiService);
   });
 
   void setUpMockHttpClientSuccess() {
-    when(mockHttpClient.get(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
+    final response = http.Response(fixture('trivia.json'), 200);
+    when(mockNumberTriviaApiService.getConcreteNumberTrivia(any))
+        .thenAnswer((_) async => Response(response, json.decode(response.body)));
+    when(mockNumberTriviaApiService.getRandomNumberTrivia())
+        .thenAnswer((_) async => Response(response, json.decode(response.body)));
   }
 
   void setUpMockHttpClientFailure() {
-    when(mockHttpClient.get(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => http.Response('Something went wrong', 404));
+    final response = http.Response('Something went wrong', 404);
+    when(mockNumberTriviaApiService.getConcreteNumberTrivia(any))
+        .thenAnswer((_) async => Response(response, null));
+    when(mockNumberTriviaApiService.getRandomNumberTrivia())
+        .thenAnswer((_) async => Response(response, null));
   }
 
   group('getConcreteNumberTrivia', () {
@@ -36,20 +44,14 @@ void main() {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
 
     test(
-      '''should perform a request on a URL with number being the endpoint
-      and with application/json header''',
+      'should perform a request on a URL with number being the endpoint',
       () async {
         // arrange
         setUpMockHttpClientSuccess();
         // act
         dataSource.getConcreteNumberTrivia(tNumber);
         // assert
-        verify(mockHttpClient.get(
-          'http://numbersapi.com/$tNumber',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ));
+        verify(mockNumberTriviaApiService.getConcreteNumberTrivia(tNumber));
       },
     );
 
@@ -82,26 +84,20 @@ void main() {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
 
     test(
-      '''should perform a request on a URL with random being the endpoint
-      and with application/json header''',
-          () async {
+      'should perform a request on a URL with random being the endpoint and with application/json header',
+      () async {
         // arrange
         setUpMockHttpClientSuccess();
         // act
         dataSource.getRandomNumberTrivia();
         // assert
-        verify(mockHttpClient.get(
-          'http://numbersapi.com/random',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ));
+        verify(mockNumberTriviaApiService.getRandomNumberTrivia());
       },
     );
 
     test(
       'should return NumberTrivia when the response code is 200 (success)',
-          () async {
+      () async {
         // arrange
         setUpMockHttpClientSuccess();
         // act
@@ -113,7 +109,7 @@ void main() {
 
     test(
       'should throw ServerException when the response code is 404 (failure)',
-          () async {
+      () async {
         // arrange
         setUpMockHttpClientFailure();
         // act

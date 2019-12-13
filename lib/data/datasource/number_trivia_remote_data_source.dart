@@ -10,15 +10,15 @@ abstract class NumberTriviaRemoteDataSource {
 }
 
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
-  final NumberTriviaApiService numberTriviaApiService;
+  final NumberTriviaApiService apiService;
 
   NumberTriviaRemoteDataSourceImpl({
-    @required this.numberTriviaApiService,
+    @required this.apiService,
   });
 
   @override
   Future<NumberTriviaModel> getConcreteNumberTrivia(int number) async {
-    final response = await numberTriviaApiService.getConcreteNumberTrivia(number);
+    final response = await apiService.getConcreteNumberTrivia(number);
 
     if (response.statusCode == 200) {
       return NumberTriviaModel.fromJson(response.body);
@@ -29,7 +29,7 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
 
   @override
   Future<NumberTriviaModel> getRandomNumberTrivia() async {
-    final response = await numberTriviaApiService.getRandomNumberTrivia();
+    final response = await apiService.getRandomNumberTrivia();
 
     if (response.statusCode == 200) {
       return NumberTriviaModel.fromJson(response.body);
