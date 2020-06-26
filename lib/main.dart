@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'injection_container.dart' as dependencyInjection;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   _setupLogging();
   await dependencyInjection.init();
   runApp(MyApp());
