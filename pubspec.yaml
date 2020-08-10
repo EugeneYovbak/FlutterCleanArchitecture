@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Characters
+  characters: 1.0.0
+
   # State Management
   flutter_bloc: ^2.0.1
 
