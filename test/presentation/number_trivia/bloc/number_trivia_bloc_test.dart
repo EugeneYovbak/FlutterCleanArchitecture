@@ -215,4 +215,8 @@ void main() {
       },
     );
   });
+
+  tearDown(() {
+    bloc.close();
+  });
 }
