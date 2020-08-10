@@ -35,7 +35,7 @@ dev_dependencies:
 
   analyzer: 0.39.14
 
-  build_runner: 1.10.0
+  build_runner:
   chopper_generator: ^3.0.1+1
 
   mockito: ^4.1.1
